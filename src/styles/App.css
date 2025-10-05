@@ -1,1 +1,17 @@
 
+.lap-timer {
+  text-align: center;
+  font-family: sans-serif;
+  margin-top: 50px;
+}
+
+.controls button {
+  margin: 5px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.laps {
+  margin-top: 20px;
+}
