@@ -2,62 +2,64 @@ import React, { useState, useEffect, useRef } from "react";
 import "../styles/App.css";
 
 function App() {
-  const [time, setTime] = useState(0); // in centiseconds
+  const [time, setTime] = useState(0); // centiseconds
   const [isRunning, setIsRunning] = useState(false);
   const [laps, setLaps] = useState([]);
   const intervalRef = useRef(null);
 
-  // Start the timer
+  // Start timer
   const handleStart = () => {
     if (!isRunning) {
       setIsRunning(true);
       intervalRef.current = setInterval(() => {
         setTime((prev) => prev + 1);
-      }, 10); // 10ms = 1 centisecond
+      }, 10); // 1 centisecond = 10ms
     }
   };
 
-  // Stop the timer
+  // Stop timer
   const handleStop = () => {
     setIsRunning(false);
     clearInterval(intervalRef.current);
   };
 
-  // Record current lap time
+  // Record lap
   const handleLap = () => {
     if (isRunning) {
-      setLaps([...laps, time]);
+      setLaps((prev) => [...prev, time]);
     }
   };
 
   // Reset everything
   const handleReset = () => {
-    setIsRunning(false);
     clearInterval(intervalRef.current);
+    setIsRunning(false);
     setTime(0);
     setLaps([]);
   };
 
-  // Cleanup interval on unmount
+  // Clean up
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  // Format time display
+  // Format: mm:ss:cc
   const formatTime = (t) => {
     const centiseconds = t % 100;
     const seconds = Math.floor((t / 100) % 60);
     const minutes = Math.floor(t / 6000);
-    return `${pad(minutes)}:${pad(seconds)}.${pad(centiseconds)}`;
+    return `${pad(minutes)}:${pad(seconds)}:${pad(centiseconds)}`;
   };
 
   const pad = (num) => (num < 10 ? "0" + num : num);
 
   return (
     <div className="lap-timer">
+      {/* Timer Display */}
       <h1>Lap Timer</h1>
-      <h2>{formatTime(time)}</h2>
+      <h2 id="timer">{formatTime(time)}</h2>
 
+      {/* Control Buttons */}
       <div className="controls">
         {!isRunning ? (
           <button onClick={handleStart}>Start</button>
@@ -68,11 +70,12 @@ function App() {
         <button onClick={handleReset}>Reset</button>
       </div>
 
-      <div className="laps">
+      {/* Lap List */}
+      <ul>
         {laps.map((lap, index) => (
-          <p key={index}>Lap {index + 1}: {formatTime(lap)}</p>
+          <li key={index}>{formatTime(lap)}</li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
